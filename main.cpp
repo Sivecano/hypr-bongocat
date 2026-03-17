@@ -118,8 +118,8 @@ void initialLoad() {
   }
 }
 
-void onCloseWindow(void *self, std::any data) {
-  const auto PWINDOW = std::any_cast<PHLWINDOW>(data);
+void onCloseWindow(PHLWINDOW PWINDOW) {
+  // const auto PWINDOW = std::any_cast<PHLWINDOW>(data);
   auto square = current;
 
   if (current && current->getOwner() == PWINDOW) {
@@ -128,8 +128,8 @@ void onCloseWindow(void *self, std::any data) {
   }
 }
 
-void onActiveWindow(void *self, std::any data) {
-  const auto PWINDOW = std::any_cast<PHLWINDOW>(data);
+void onActiveWindow(PHLWINDOW PWINDOW) {
+  // const auto PWINDOW = std::any_cast<PHLWINDOW>(data);
 
   if (!isTextureLoaded)
     initialLoad();
@@ -163,7 +163,7 @@ void onActiveWindow(void *self, std::any data) {
   }
 }
 
-void onConfigReload(void *self, std::any data) {
+void onConfigReload() {
   const auto PWINDOW = Desktop::focusState()->window();
 
   if (current) {
@@ -214,22 +214,25 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
   HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprfoci:imgs",
                               Hyprlang::STRING{"none"});
 
-  static auto P = HyprlandAPI::registerCallbackDynamic(
-      PHANDLE, "closeWindow",
-      [&](void *self, SCallbackInfo &info, std::any data) {
-        onCloseWindow(self, data);
-      });
+  // static auto P = HyprlandAPI::registerCallbackDynamic(
+  //     PHANDLE, "closeWindow",
+  //     [&](void *self, Event::SCallbackInfo &info, std::any data) {
+  //       onCloseWindow(self, data);
+  //     });
+  //
+  // static auto P1 = HyprlandAPI::registerCallbackDynamic(
+  //     PHANDLE, "activeWindow",
+  //     [&](void *self, Event::SCallbackInfo &info, std::any data) {
+  //       onActiveWindow(self, data);
+  //     });
+  // static auto P2 = HyprlandAPI::registerCallbackDynamic(
+  //     PHANDLE, "configReloaded",
+  //     [&](void *self, Event::SCallbackInfo &info, std::any data) {
+  //       onConfigReload(self, data);
 
-  static auto P1 = HyprlandAPI::registerCallbackDynamic(
-      PHANDLE, "activeWindow",
-      [&](void *self, SCallbackInfo &info, std::any data) {
-        onActiveWindow(self, data);
-      });
-  static auto P2 = HyprlandAPI::registerCallbackDynamic(
-      PHANDLE, "configReloaded",
-      [&](void *self, SCallbackInfo &info, std::any data) {
-        onConfigReload(self, data);
-      });
+static auto P  = Event::bus()->m_events.window.close.listen([&](PHLWINDOW w) { onCloseWindow(w); });
+static auto P1 = Event::bus()->m_events.window.active.listen([&](PHLWINDOW w, Desktop::eFocusReason reason) { onActiveWindow(w); });
+static auto P2 = Event::bus()->m_events.config.reloaded.listen([&] { onConfigReload(); });
 
   // generate a deco for current window if exists
   for (auto &w : g_pCompositor->m_windows) {
