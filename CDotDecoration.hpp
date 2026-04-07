@@ -3,6 +3,7 @@
 #include <hyprland/src/render/Texture.hpp>
 #include <hyprland/src/render/decorations/IHyprWindowDecoration.hpp>
 #include <hyprland/src/event/EventBus.hpp>
+#include <hyprutils/signal/Signal.hpp>
 
 class CDotDecoration : public IHyprWindowDecoration {
 public:
@@ -23,7 +24,7 @@ public:
   virtual std::string getHandForKeyEvent(IKeyboard::SKeyEvent event);
 
 private:
-  CHyprSignalListener m_pKeypressCallback;
+  Hyprutils::Signal::CHyprSignalListener m_pKeypressCallback;
   PHLWINDOWREF m_pWindow;
   SP<CTexture> m_pTexture;
 };

@@ -7,6 +7,7 @@
 #include <hyprland/src/Compositor.hpp>
 #include <hyprland/src/helpers/MiscFunctions.hpp>
 #include <hyprland/src/plugins/PluginAPI.hpp>
+#include <hyprland/src/event/EventBus.hpp>
 #include <hyprland/src/desktop/state/FocusState.hpp>
 #include <hyprland/src/desktop/view/Window.hpp>
 #include <hyprlang.hpp>
@@ -119,7 +120,6 @@ void initialLoad() {
 }
 
 void onCloseWindow(PHLWINDOW PWINDOW) {
-  // const auto PWINDOW = std::any_cast<PHLWINDOW>(data);
   auto square = current;
 
   if (current && current->getOwner() == PWINDOW) {
@@ -129,7 +129,6 @@ void onCloseWindow(PHLWINDOW PWINDOW) {
 }
 
 void onActiveWindow(PHLWINDOW PWINDOW) {
-  // const auto PWINDOW = std::any_cast<PHLWINDOW>(data);
 
   if (!isTextureLoaded)
     initialLoad();
@@ -213,22 +212,6 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
                               Hyprlang::STRING{"none"});
   HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprfoci:imgs",
                               Hyprlang::STRING{"none"});
-
-  // static auto P = HyprlandAPI::registerCallbackDynamic(
-  //     PHANDLE, "closeWindow",
-  //     [&](void *self, Event::SCallbackInfo &info, std::any data) {
-  //       onCloseWindow(self, data);
-  //     });
-  //
-  // static auto P1 = HyprlandAPI::registerCallbackDynamic(
-  //     PHANDLE, "activeWindow",
-  //     [&](void *self, Event::SCallbackInfo &info, std::any data) {
-  //       onActiveWindow(self, data);
-  //     });
-  // static auto P2 = HyprlandAPI::registerCallbackDynamic(
-  //     PHANDLE, "configReloaded",
-  //     [&](void *self, Event::SCallbackInfo &info, std::any data) {
-  //       onConfigReload(self, data);
 
 static auto P  = Event::bus()->m_events.window.close.listen([&](PHLWINDOW w) { onCloseWindow(w); });
 static auto P1 = Event::bus()->m_events.window.active.listen([&](PHLWINDOW w, Desktop::eFocusReason reason) { onActiveWindow(w); });

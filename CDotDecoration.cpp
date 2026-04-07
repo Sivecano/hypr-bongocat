@@ -12,6 +12,7 @@
 #include <hyprlang.hpp>
 #include <hyprutils/memory/UniquePtr.hpp>
 #include <string>
+#include <hyprland/src/event/EventBus.hpp>
 
 CDotDecoration::CDotDecoration(PHLWINDOW pWindow)
     : IHyprWindowDecoration(pWindow) {
@@ -19,11 +20,6 @@ CDotDecoration::CDotDecoration(PHLWINDOW pWindow)
 
   if (g_pTextures["both.png"]) {
     m_pTexture = g_pTextures["both.png"];
-    // m_pKeypressCallback = HyprlandAPI::registerCallbackDynamic(
-    //     PHANDLE, "keyPress",
-    //     [&](void *self, Event::SCallbackInfo &info, std::any data) {
-    //       onKeypress(info, data);
-    //     });/usr/include/hyprland/src/devices/IKeyboard.hpp
     m_pKeypressCallback = Event::bus()->m_events.input.keyboard.key.listen(
         [&](IKeyboard::SKeyEvent event, Event::SCallbackInfo& info) {
             onKeypress(event, info);
@@ -36,32 +32,12 @@ CDotDecoration::CDotDecoration(PHLWINDOW pWindow)
 }
 
 void CDotDecoration::onKeypress(IKeyboard::SKeyEvent event, Event::SCallbackInfo &info) {
-  // auto const keyEvent =
-  //     std::any_cast<std::unordered_map<std::string, std::any>>(data);
-  // auto const event = std::any_cast<IKeyboard::SKeyEvent>(keyEvent.at("event"));
 
   auto const hand = getHandForKeyEvent(event);
-    // HyprlandAPI::addNotification(
-    //     PHANDLE,
-    //     hand,
-    //     CHyprColor{1.0, 0.2, 0.2, 1.0}, 5000);
-    // HyprlandAPI::addNotification(
-    //     PHANDLE,
-    //     std::to_string(event.state),
-    //     CHyprColor{1.0, 0.2, 0.2, 1.0}, 5000);
-    // HyprlandAPI::addNotification(
-    //     PHANDLE,
-    //     std::to_string(WL_KEYBOARD_KEY_STATE_PRESSED),
-    //     CHyprColor{1.0, 0.2, 0.2, 1.0}, 5000);
 
   std::string textureName;
   if (event.state == WL_KEYBOARD_KEY_STATE_PRESSED) {
     textureName = hand;
-    // HyprlandAPI::addNotification(
-    //     PHANDLE,
-    //     "should be triggering",
-    //     CHyprColor{1.0, 0.2, 0.2, 1.0}, 5000);
-
   } else {
     textureName = "both.png";
   }
@@ -73,15 +49,6 @@ void CDotDecoration::onKeypress(IKeyboard::SKeyEvent event, Event::SCallbackInfo
 
 std::string CDotDecoration::getHandForKeyEvent(IKeyboard::SKeyEvent event) {
   uint32_t keycode = event.keycode;
-
-    HyprlandAPI::addNotification(
-        PHANDLE,
-        std::to_string(keycode),
-        CHyprColor{1.0, 0.2, 0.2, 1.0}, 5000);
-//HyprlandAPI::addNotification(PHANDLE, 
-//    "keycode: " + std::to_string(event.keycode) + " time: " + std::to_string(event.timeMs),
-    CHyprColor{1.0, 0.2, 0.2, 1.0}, 5000);
-
 
   // Left hand keys on a standard QWERTY keyboard
   const std::vector<uint32_t> leftHandKeys = {// Left side of number row
