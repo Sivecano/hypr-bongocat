@@ -15,6 +15,7 @@
 #include <hyprutils/memory/SharedPtr.hpp>
 #include <hyprutils/memory/UniquePtr.hpp>
 #include <string>
+#include <hyprland/src/render/Renderer.hpp>
 
 static CDotDecoration *current = nullptr;
 static bool isTextureLoaded = false;
@@ -23,8 +24,8 @@ static bool isTextureLoaded = false;
 void loadTexture(fs::path parentPath, bool animated) {
   if (!animated) {
     g_pTexture = nullptr;
-    g_pTexture = makeShared<CTexture>();
-    g_pTexture->allocate();
+    g_pTexture = g_pHyprRenderer->createTexture();
+    g_pTexture->allocate(Vector2D{864, 360}); // TODO don't hardcode this
     fs::path path = parentPath;
 
     if (!fs::exists(path))
@@ -56,8 +57,8 @@ void loadTexture(fs::path parentPath, bool animated) {
     for (auto &pair : g_pTextures) {
       pair.second = nullptr;
 
-      pair.second = makeShared<CTexture>();
-      pair.second->allocate();
+      pair.second = g_pHyprRenderer->createTexture();
+      pair.second->allocate(Vector2D{864, 360}); // TODO don't hardcode this
       fs::path path = parentPath / pair.first;
 
       if (!fs::exists(path))
@@ -91,25 +92,19 @@ void loadTexture(fs::path parentPath, bool animated) {
 }
 
 void initialLoad() {
-  static const auto m_pImgPaths =
-      (const Hyprlang::STRING *)HyprlandAPI::getConfigValue(
-          PHANDLE, "plugin:hyprfoci:imgs")
-          ->getDataStaticPtr();
-  static const auto m_pImgPath =
-      (const Hyprlang::STRING *)HyprlandAPI::getConfigValue(
-          PHANDLE, "plugin:hyprfoci:img")
-          ->getDataStaticPtr();
+  static auto ImgPaths = vars.imgs->value();
+  static auto ImgPath = vars.img->value();
 
   // make sure only load img or imgs
-  if (std::string{*m_pImgPaths} != "none") {
+  if (ImgPaths != "none") {
     g_pTexture = nullptr;
-    const auto path = expandTilde(std::string{*m_pImgPaths});
+    const auto path = expandTilde(ImgPaths);
     loadTexture(path, true);
-  } else if (std::string{*m_pImgPath} != "none") {
+  } else if (ImgPath != "none") {
     for (auto &t : g_pTextures) {
       t.second = nullptr;
     }
-    const auto path = expandTilde(std::string{*m_pImgPath});
+    const auto path = expandTilde(ImgPath);
     loadTexture(path, false);
   } else {
     for (auto &t : g_pTextures) {
@@ -119,7 +114,7 @@ void initialLoad() {
   }
 }
 
-void onCloseWindow(PHLWINDOW PWINDOW) {
+void onCloseWindow(const PHLWINDOW& PWINDOW) {
   auto square = current;
 
   if (current && current->getOwner() == PWINDOW) {
@@ -128,7 +123,7 @@ void onCloseWindow(PHLWINDOW PWINDOW) {
   }
 }
 
-void onActiveWindow(PHLWINDOW PWINDOW) {
+void onActiveWindow(const PHLWINDOW& PWINDOW) {
 
   if (!isTextureLoaded)
     initialLoad();
@@ -138,14 +133,11 @@ void onActiveWindow(PHLWINDOW PWINDOW) {
   }
 
   if (PWINDOW) {
-    static const auto excluded =
-        (const Hyprlang::STRING *)HyprlandAPI::getConfigValue(
-           PHANDLE, "plugin:hyprfoci:exclude")
-           ->getDataStaticPtr();
+    std::string excluded = vars.exclude->value();
 
     std::string WindowTitle = PWINDOW->m_class;
     std::string className;
-    for(char c : std::string{*excluded} + ',') {
+    for(char c : excluded + ',') {
       if (c == ' ' || c == ',') {
         if(!className.empty() && WindowTitle == className) {
           current = nullptr;
@@ -194,28 +186,38 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
   }
 
   // config variables
-  HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprfoci:size",
-                              Hyprlang::VEC2{20, 20});
-  HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprfoci:pos",
-                              Hyprlang::VEC2{10, 10});
-  HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprfoci:origin",
-                              Hyprlang::VEC2{0, 0});
-  HyprlandAPI::addConfigValue(
-      PHANDLE, "plugin:hyprfoci:color",
-      Hyprlang::INT{*configStringToInt("rgba(11ff3388)")});
-  HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprfoci:rounding",
-                              Hyprlang::FLOAT{4.0});
-  HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprfoci:exclude",
-                              Hyprlang::STRING{""});
+  vars.size     = makeShared<Config::Values::CVec2Value>("plugin:hyprfoci:size",     "Size of dot", Config::VEC2{20, 20});
+  vars.pos      = makeShared<Config::Values::CVec2Value>("plugin:hyprfoci:pos",      "Position offset", Config::VEC2{10, 10});
+  vars.origin   = makeShared<Config::Values::CVec2Value>("plugin:hyprfoci:origin",   "Origin (0: left/top, 1: middle, 2: down/right)", Config::VEC2{0, 0});
+  vars.color    = makeShared<Config::Values::CColorValue>("plugin:hyprfoci:color",   "Colour of dot", 0x8833ff11); // rgba(11ff3388)
+  vars.rounding = makeShared<Config::Values::CFloatValue>("plugin:hyprfoci:rounding","Rounding of dot", 4.0f);
+  vars.exclude  = makeShared<Config::Values::CStringValue>("plugin:hyprfoci:exclude","Excluded windows", "");
+  vars.img      = makeShared<Config::Values::CStringValue>("plugin:hyprfoci:img",    "Image path"," none");
+  vars.imgs     = makeShared<Config::Values::CStringValue>("plugin:hyprfoci:imgs",   "Image path", "none");
 
-  HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprfoci:img",
-                              Hyprlang::STRING{"none"});
-  HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprfoci:imgs",
-                              Hyprlang::STRING{"none"});
+  HyprlandAPI::addConfigValueV2(PHANDLE, vars.size);
+  HyprlandAPI::addConfigValueV2(PHANDLE, vars.pos);
+  HyprlandAPI::addConfigValueV2(PHANDLE, vars.origin);
+  HyprlandAPI::addConfigValueV2(PHANDLE, vars.color);
+  HyprlandAPI::addConfigValueV2(PHANDLE, vars.rounding);
+  HyprlandAPI::addConfigValueV2(PHANDLE, vars.exclude);
+  HyprlandAPI::addConfigValueV2(PHANDLE, vars.img);
+  HyprlandAPI::addConfigValueV2(PHANDLE, vars.imgs);
 
-static auto P  = Event::bus()->m_events.window.close.listen([&](PHLWINDOW w) { onCloseWindow(w); });
-static auto P1 = Event::bus()->m_events.window.active.listen([&](PHLWINDOW w, Desktop::eFocusReason reason) { onActiveWindow(w); });
-static auto P2 = Event::bus()->m_events.config.reloaded.listen([&] { onConfigReload(); });
+  static auto closeWindowListener = Event::bus()->m_events.window.close.listen(
+      [](const PHLWINDOW& window) {
+          onCloseWindow(window);
+      });
+
+  static auto activeWindowListener = Event::bus()->m_events.window.active.listen(
+      [](const PHLWINDOW& window, Desktop::eFocusReason reason) {
+          onActiveWindow(window);
+      });
+
+  static auto configReloadListener = Event::bus()->m_events.config.reloaded.listen(
+      []() {
+          onConfigReload();
+      });
 
   // generate a deco for current window if exists
   for (auto &w : g_pCompositor->m_windows) {

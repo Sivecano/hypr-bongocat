@@ -3,7 +3,7 @@
 #include <hyprland/src/render/Texture.hpp>
 #include <hyprland/src/render/decorations/IHyprWindowDecoration.hpp>
 #include <hyprland/src/event/EventBus.hpp>
-#include <hyprutils/signal/Signal.hpp>
+#include <hyprland/src/plugins/PluginAPI.hpp>
 
 class CDotDecoration : public IHyprWindowDecoration {
 public:
@@ -20,11 +20,19 @@ public:
   virtual CBox getSquareBox();
   virtual void onPositioningReply(const SDecorationPositioningReply &reply);
   PHLWINDOW getOwner();
+<<<<<<< HEAD
   virtual void onKeypress(IKeyboard::SKeyEvent event, Event::SCallbackInfo &info);
   virtual std::string getHandForKeyEvent(IKeyboard::SKeyEvent event);
 
 private:
   Hyprutils::Signal::CHyprSignalListener m_pKeypressCallback;
+=======
+  virtual void onKeypress(Event::SCallbackInfo& info, const IKeyboard::SKeyEvent& event);
+  virtual std::string getHandForKeyEvent(IKeyboard::SKeyEvent event);
+
+private:
+  CHyprSignalListener m_pKeypressCallback;
+>>>>>>> b840ba8 (fix(update): adapted for hyprland 0.55 and general cleanup)
   PHLWINDOWREF m_pWindow;
-  SP<CTexture> m_pTexture;
+  SP<Render::ITexture> m_pTexture;
 };
