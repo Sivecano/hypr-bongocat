@@ -20,19 +20,11 @@ public:
   virtual CBox getSquareBox();
   virtual void onPositioningReply(const SDecorationPositioningReply &reply);
   PHLWINDOW getOwner();
-<<<<<<< HEAD
-  virtual void onKeypress(IKeyboard::SKeyEvent event, Event::SCallbackInfo &info);
-  virtual std::string getHandForKeyEvent(IKeyboard::SKeyEvent event);
-
-private:
-  Hyprutils::Signal::CHyprSignalListener m_pKeypressCallback;
-=======
   virtual void onKeypress(Event::SCallbackInfo& info, const IKeyboard::SKeyEvent& event);
   virtual std::string getHandForKeyEvent(IKeyboard::SKeyEvent event);
 
 private:
   CHyprSignalListener m_pKeypressCallback;
->>>>>>> b840ba8 (fix(update): adapted for hyprland 0.55 and general cleanup)
   PHLWINDOWREF m_pWindow;
   SP<Render::ITexture> m_pTexture;
 };
