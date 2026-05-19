@@ -25,7 +25,7 @@ void loadTexture(fs::path parentPath, bool animated) {
   if (!animated) {
     g_pTexture = nullptr;
     g_pTexture = g_pHyprRenderer->createTexture();
-    g_pTexture->allocate(Vector2D{864, 360}); // TODO don't hardcode this
+    g_pTexture->allocate(Vector2D());
     fs::path path = parentPath;
 
     if (!fs::exists(path))
@@ -58,7 +58,7 @@ void loadTexture(fs::path parentPath, bool animated) {
       pair.second = nullptr;
 
       pair.second = g_pHyprRenderer->createTexture();
-      pair.second->allocate(Vector2D{864, 360}); // TODO don't hardcode this
+      pair.second->allocate(Vector2D());
       fs::path path = parentPath / pair.first;
 
       if (!fs::exists(path))
