@@ -47,24 +47,24 @@ to your prefered location and set plugin:hyprfoci:imgs accordingly
 hl.config({
     plugin = {
         hyprfoci = {
-            # can be from -1 to 1, will be
-                # dynamic ratio with the window instead.
-                # recommend fixed size for image as dynamic can look weird
-                # leave one as 0 to keep original image ratio (image only)
-            # width, height
+            -- can be from -1 to 1, will be
+                -- dynamic ratio with the window instead.
+                -- recommend fixed size for image as dynamic can look weird
+                -- leave one as 0 to keep original image ratio (image only)
+            -- width, height
             size = { 100, 0 },			
 
-            # shift down right (can be from -1 to 1, similarly)
+            -- shift down right (can be from -1 to 1, similarly)
             pos = { 0, 0 },
 
-            #0: left/top, 1: middle, 2: down/right
+            --0: left/top, 1: middle, 2: down/right
             origin = { 1, 0 },
 
-            # path to a directory with both.png, left.png, right.png
-            # Absolute path is needed (~ for home directory is fine)
+            -- path to a directory with both.png, left.png, right.png
+            -- Absolute path is needed (~ for home directory is fine)
             imgs = "/path/to/your/imgs",
 
-            # can also exclude specific windows!
+            -- can also exclude specific windows!
             exclude = "kitty, firefox",        
         }
     }
@@ -81,32 +81,32 @@ Add the following to your Hyprland.lua for normal configuration with dot or png
 hl.plugin({
     plugin = {
         hyprfoci {
-            # can be from -1 to 1, will be
-                # dynamic ratio with the window instead.
-                # recommend fixed size for image as dynamic can look weird
-                # in some cases.
-                # leave one as 0 to keep original image ratio (image only)
-            # width, height
+            -- can be from -1 to 1, will be
+                -- dynamic ratio with the window instead.
+                -- recommend fixed size for image as dynamic can look weird
+                -- in some cases.
+                -- leave one as 0 to keep original image ratio (image only)
+            -- width, height
             size = { 100, 0 },			
 
-            # shift down right (can be from -1 to 1 similarly)
+            -- shift down right (can be from -1 to 1 similarly)
             pos = { 0, 0 },
 
-            # rounding of 3~4 usually results in circle
-                # depends on monitor type
-                # higher and lower will make it look square-ly
-                # doesn't affect image
+            -- rounding of 3~4 usually results in circle
+                -- depends on monitor type
+                -- higher and lower will make it look square-ly
+                -- doesn't affect image
             rounding = 4.0
 
-            # color = rgba(FFDD33FF)
+            -- color = rgba(FFDD33FF)
 
-            #0: left/top, 1: middle, 2: down/right
+            --0: left/top, 1: middle, 2: down/right
             origin = { 1, 0 }, 
 
-            # Absolute path is needed (~ for home directory is fine)
+            -- Absolute path is needed (~ for home directory is fine)
             img = "/path/to/your/image.png", 
             
-            # can also exclude specific windows!
+            -- can also exclude specific windows!
             exclude = "kitty, firefox",        
         }
 	}
