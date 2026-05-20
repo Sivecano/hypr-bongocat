@@ -195,6 +195,10 @@ void CDotDecoration::updateWindow(PHLWINDOW pWindow) { damageEntire(); }
 
 void CDotDecoration::damageEntire() {
   auto box = getSquareBox();
+  box.expand(100); // FIXME: i'm so sorry
+                   // when moving windows down, sometimes the top part doesn't
+                   // get damaged properly. there is no listener for moving windows
+                   // and i'm not busywaiting this shit
   g_pHyprRenderer->damageBox(box);
 }
 
