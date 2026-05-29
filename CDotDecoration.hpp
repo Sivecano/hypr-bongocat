@@ -20,11 +20,15 @@ public:
   virtual CBox getSquareBox();
   virtual void onPositioningReply(const SDecorationPositioningReply &reply);
   PHLWINDOW getOwner();
-  virtual void onKeypress(Event::SCallbackInfo& info, const IKeyboard::SKeyEvent& event);
+  virtual void onKeypress(const IKeyboard::SKeyEvent& event);
   virtual std::string getHandForKeyEvent(IKeyboard::SKeyEvent event);
 
 private:
   CHyprSignalListener m_pKeypressCallback;
   PHLWINDOWREF m_pWindow;
   SP<Render::ITexture> m_pTexture;
+  struct {
+    int32_t left = 0;
+    int32_t right = 0;
+  } m_hands;
 };

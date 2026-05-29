@@ -18,11 +18,11 @@ CDotDecoration::CDotDecoration(PHLWINDOW pWindow)
     : IHyprWindowDecoration(pWindow) {
   m_pWindow = pWindow;
 
-  if (g_pTextures["both.png"]) {
-    m_pTexture = g_pTextures["both.png"];
+  if (g_pTextures["none.png"]) {
+    m_pTexture = g_pTextures["none.png"];
     m_pKeypressCallback = Event::bus()->m_events.input.keyboard.key.listen(
         [this](const IKeyboard::SKeyEvent& e, Event::SCallbackInfo& info) {
-            onKeypress(info, e);
+            onKeypress(e);
         });
   } else if (g_pTexture) {
     m_pTexture = g_pTexture;
@@ -31,15 +31,11 @@ CDotDecoration::CDotDecoration(PHLWINDOW pWindow)
   const auto PMONITOR = pWindow->m_monitor.lock();
 }
 
-void CDotDecoration::onKeypress(Event::SCallbackInfo& info, const IKeyboard::SKeyEvent& event) {
+void CDotDecoration::onKeypress(const IKeyboard::SKeyEvent& event) {
   auto const hand = getHandForKeyEvent(event);
 
   std::string textureName;
-  if (event.state == WL_KEYBOARD_KEY_STATE_PRESSED) {
-    textureName = hand;
-  } else {
-    textureName = "both.png";
-  }
+  textureName = hand;
 
   const auto PMONITOR = m_pWindow->m_monitor.lock();
   damageEntire();
@@ -68,12 +64,30 @@ std::string CDotDecoration::getHandForKeyEvent(IKeyboard::SKeyEvent event) {
                                               KEY_LEFTALT, KEY_LEFTMETA};
 
   // Check if keycode is for a left hand key
+  int delta = (event.state == WL_KEYBOARD_KEY_STATE_PRESSED) ? 1 : -1; // Key down +1, key down -1
   if (std::find(leftHandKeys.begin(), leftHandKeys.end(), keycode) !=
       leftHandKeys.end()) {
-    return "left.png"; // Left hand
+    m_hands.left += delta; // Left hand
   } else {
-    return "right.png"; // Everything else is right hand?
+    m_hands.right += delta; // Everything else is (probably) right hand
   }
+
+  // Counteract keys being held during init
+  if (m_hands.left < 0) m_hands.left = 0;
+  if (m_hands.right < 0) m_hands.right = 0;
+
+  // Determine which sides are currently being pressed
+  if (m_hands.left) {
+    if(m_hands.right) {
+      return "both.png";
+    }
+    return "left.png";
+  }
+  if (m_hands.right) {
+    return "right.png";
+  }
+  return "none.png";
+  
 }
 
 CDotDecoration::~CDotDecoration() { damageEntire(); }

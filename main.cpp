@@ -186,14 +186,14 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
   }
 
   // config variables
-  vars.size     = makeShared<Config::Values::CVec2Value>("plugin:hypr-bongocat:size",     "Size of dot", Config::VEC2{20, 20});
-  vars.pos      = makeShared<Config::Values::CVec2Value>("plugin:hypr-bongocat:pos",      "Position offset", Config::VEC2{10, 10});
-  vars.origin   = makeShared<Config::Values::CVec2Value>("plugin:hypr-bongocat:origin",   "Origin (0: left/top, 1: middle, 2: down/right)", Config::VEC2{0, 0});
-  vars.color    = makeShared<Config::Values::CColorValue>("plugin:hypr-bongocat:color",   "Colour of dot", 0x8833ff11); // rgba(11ff3388)
-  vars.rounding = makeShared<Config::Values::CFloatValue>("plugin:hypr-bongocat:rounding","Rounding of dot", 4.0f);
-  vars.exclude  = makeShared<Config::Values::CStringValue>("plugin:hypr-bongocat:exclude","Excluded windows", "");
-  vars.img      = makeShared<Config::Values::CStringValue>("plugin:hypr-bongocat:img",    "Image path"," none");
-  vars.imgs     = makeShared<Config::Values::CStringValue>("plugin:hypr-bongocat:imgs",   "Image path", "none");
+  vars.size     = makeShared<Config::Values::CVec2Value>("plugin:hypr_bongocat:size",     "Size of dot", Config::VEC2{20, 20});
+  vars.pos      = makeShared<Config::Values::CVec2Value>("plugin:hypr_bongocat:pos",      "Position offset", Config::VEC2{10, 10});
+  vars.origin   = makeShared<Config::Values::CVec2Value>("plugin:hypr_bongocat:origin",   "Origin (0: left/top, 1: middle, 2: down/right)", Config::VEC2{0, 0});
+  vars.color    = makeShared<Config::Values::CColorValue>("plugin:hypr_bongocat:color",   "Colour of dot", 0x8833ff11); // rgba(11ff3388)
+  vars.rounding = makeShared<Config::Values::CFloatValue>("plugin:hypr_bongocat:rounding","Rounding of dot", 4.0f);
+  vars.exclude  = makeShared<Config::Values::CStringValue>("plugin:hypr_bongocat:exclude","Excluded windows", "");
+  vars.img      = makeShared<Config::Values::CStringValue>("plugin:hypr_bongocat:img",    "Image path"," none");
+  vars.imgs     = makeShared<Config::Values::CStringValue>("plugin:hypr_bongocat:imgs",   "Image path", "none");
 
   HyprlandAPI::addConfigValueV2(PHANDLE, vars.size);
   HyprlandAPI::addConfigValueV2(PHANDLE, vars.pos);
