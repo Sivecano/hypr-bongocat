@@ -59,8 +59,7 @@ hl.config({
 })
 ```
 
-### DEPRECATED
-### Simple dot or png
+### DEPRECATED - Simple dot or png
 
 This functionality is deprecated and will be removed in a future version
 Add the following to your Hyprland.lua for normal configuration with dot or png
