@@ -2,8 +2,8 @@
 
 A tiny Hyprland plugin that draws a bongo cat on your window that taps while you type!
 
-## Demo (bongo)
-[📽️ Demo video (v0.2.1)](https://github.com/user-attachments/assets/1fdaddc6-038f-4a72-b526-8591fa29e1c0)
+## Demo
+[📽️ Demo video](https://github.com/user-attachments/assets/b9b67a34-88ff-4fdb-bc84-cb4c047ac0ff)
 
 ## Installation
 ### Requirement
