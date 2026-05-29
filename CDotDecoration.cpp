@@ -64,7 +64,7 @@ std::string CDotDecoration::getHandForKeyEvent(IKeyboard::SKeyEvent event) {
                                               KEY_LEFTALT, KEY_LEFTMETA};
 
   // Check if keycode is for a left hand key
-  int delta = (event.state == WL_KEYBOARD_KEY_STATE_PRESSED) ? 1 : -1; // Key down +1, key down -1
+  int delta = (event.state == WL_KEYBOARD_KEY_STATE_PRESSED) ? 1 : -1; // Key down +1, key up -1
   if (std::find(leftHandKeys.begin(), leftHandKeys.end(), keycode) !=
       leftHandKeys.end()) {
     m_hands.left += delta; // Left hand
@@ -209,10 +209,7 @@ void CDotDecoration::updateWindow(PHLWINDOW pWindow) { damageEntire(); }
 
 void CDotDecoration::damageEntire() {
   auto box = getSquareBox();
-  box.expand(1000); // FIXME: i'm so sorry
-                   // when moving windows down, sometimes the top part doesn't
-                   // get damaged properly. there is no listener for moving windows
-                   // and i'm not busywaiting this shit
+  box.expand(100); // Takes care of parts that escape the damage box during moving
   g_pHyprRenderer->damageBox(box);
 }
 
