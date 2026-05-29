@@ -8,7 +8,7 @@ commit_pins = [
 	["3e35797b18d35baae82657bb0438af88156e273f", "9c9f65c4fbfaa793e4e1b24c61d9d4e09961bbe0"],
 ]
 
-[hyprfoci]
+[hypr-bongocat]
 description = "Bongo cats on your windows!"
 authors = ["RoundUp, Pohlrabi"]
 output = "hypr-bongocat.so"
