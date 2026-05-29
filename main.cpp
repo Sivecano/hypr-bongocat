@@ -29,7 +29,7 @@ void loadTexture(fs::path parentPath, bool animated) {
     fs::path path = parentPath;
 
     if (!fs::exists(path))
-      noti("[hyprfoci] {} not found", path.generic_string());
+      noti("[hypr-bongocat] {} not found", path.generic_string());
     const auto CAIROSURFACE = cairo_image_surface_create_from_png(path.c_str());
     const auto CAIRO = cairo_create(CAIROSURFACE);
 
@@ -62,7 +62,7 @@ void loadTexture(fs::path parentPath, bool animated) {
       fs::path path = parentPath / pair.first;
 
       if (!fs::exists(path))
-        noti("[hyprfoci] {} not found", pair.first, path.generic_string());
+        noti("[hypr-bongocat] {} not found", pair.first, path.generic_string());
       const auto CAIROSURFACE =
           cairo_image_surface_create_from_png(path.c_str());
       const auto CAIRO = cairo_create(CAIROSURFACE);
@@ -179,21 +179,21 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
   if (HASH.find(GIT_COMMIT_HASH) != 0) {
     HyprlandAPI::addNotification(
         PHANDLE,
-        "[Hyprfoci] Failure in initialization: Version mismatch (headers ver "
+        "[hypr-bongocat] Failure in initialization: Version mismatch (headers ver "
         "is not equal to running hyprland ver)",
         CHyprColor{1.0, 0.2, 0.2, 1.0}, 5000);
-    throw std::runtime_error("[Hyprfoci] Version mismatch");
+    throw std::runtime_error("[hypr-bongocat] Version mismatch");
   }
 
   // config variables
-  vars.size     = makeShared<Config::Values::CVec2Value>("plugin:hyprfoci:size",     "Size of dot", Config::VEC2{20, 20});
-  vars.pos      = makeShared<Config::Values::CVec2Value>("plugin:hyprfoci:pos",      "Position offset", Config::VEC2{10, 10});
-  vars.origin   = makeShared<Config::Values::CVec2Value>("plugin:hyprfoci:origin",   "Origin (0: left/top, 1: middle, 2: down/right)", Config::VEC2{0, 0});
-  vars.color    = makeShared<Config::Values::CColorValue>("plugin:hyprfoci:color",   "Colour of dot", 0x8833ff11); // rgba(11ff3388)
-  vars.rounding = makeShared<Config::Values::CFloatValue>("plugin:hyprfoci:rounding","Rounding of dot", 4.0f);
-  vars.exclude  = makeShared<Config::Values::CStringValue>("plugin:hyprfoci:exclude","Excluded windows", "");
-  vars.img      = makeShared<Config::Values::CStringValue>("plugin:hyprfoci:img",    "Image path"," none");
-  vars.imgs     = makeShared<Config::Values::CStringValue>("plugin:hyprfoci:imgs",   "Image path", "none");
+  vars.size     = makeShared<Config::Values::CVec2Value>("plugin:hypr-bongocat:size",     "Size of dot", Config::VEC2{20, 20});
+  vars.pos      = makeShared<Config::Values::CVec2Value>("plugin:hypr-bongocat:pos",      "Position offset", Config::VEC2{10, 10});
+  vars.origin   = makeShared<Config::Values::CVec2Value>("plugin:hypr-bongocat:origin",   "Origin (0: left/top, 1: middle, 2: down/right)", Config::VEC2{0, 0});
+  vars.color    = makeShared<Config::Values::CColorValue>("plugin:hypr-bongocat:color",   "Colour of dot", 0x8833ff11); // rgba(11ff3388)
+  vars.rounding = makeShared<Config::Values::CFloatValue>("plugin:hypr-bongocat:rounding","Rounding of dot", 4.0f);
+  vars.exclude  = makeShared<Config::Values::CStringValue>("plugin:hypr-bongocat:exclude","Excluded windows", "");
+  vars.img      = makeShared<Config::Values::CStringValue>("plugin:hypr-bongocat:img",    "Image path"," none");
+  vars.imgs     = makeShared<Config::Values::CStringValue>("plugin:hypr-bongocat:imgs",   "Image path", "none");
 
   HyprlandAPI::addConfigValueV2(PHANDLE, vars.size);
   HyprlandAPI::addConfigValueV2(PHANDLE, vars.pos);
@@ -228,13 +228,13 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
     }
   }
 
-  HyprlandAPI::addNotification(PHANDLE, "[Hyprfoci] init successful",
+  HyprlandAPI::addNotification(PHANDLE, "[hypr-bongocat] init successful",
                                CHyprColor{0.2, 1.0, 0.2, 1.0}, 5000);
-  return {"hyprfoci", "A plugin to add a dot focus indicator", "Pohlrabi",
+  return {"hypr-bongocat", "A plugin to add a dot focus indicator", "Pohlrabi",
           "0.2.1"};
 }
 
 APICALL EXPORT void PLUGIN_EXIT() {
-  HyprlandAPI::addNotification(PHANDLE, "[Hyprfoci] unload successful",
+  HyprlandAPI::addNotification(PHANDLE, "[hypr-bongocat] unload successful",
                                CHyprColor{0.2, 1.0, 0.2, 1.0}, 5000);
 }
