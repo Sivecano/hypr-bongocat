@@ -1,6 +1,6 @@
 [repository]
 name = "hypr-bongocat"
-authors = ["Pohlrabi"]
+authors = ["RoundUp, Pohlrabi"]
 commit_pins = [
 	["3e35797b18d35baae82657bb0438af88156e273f", "446477050783b6d7693c482c48c920be2fc12f94"], ## v0.2.1
 	["3e35797b18d35baae82657bb0438af88156e273f", "26c55cd244e3ed5d732ead9ee479a38c78488db7"], ## v0.2.0
@@ -9,6 +9,5 @@ commit_pins = [
 ]
 
 description = "Bongo cats on your windows!"
-authors = ["RoundUp, Pohlrabi"]
 output = "hypr-bongocat.so"
 build = ["make all"]
